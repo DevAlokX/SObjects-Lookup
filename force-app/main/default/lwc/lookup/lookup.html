@@ -1,0 +1,100 @@
+<template>
+    <div class="slds-form-element">
+      <label
+        class="slds-form-element__label"
+        for="searchInput" >
+  
+        <abbr if:true={required}
+          class="slds-required"
+          title="required">* </abbr>
+  
+        {fieldLabel}
+      </label>
+      <div class="slds-form-element__control">
+        <div class={containerClasses}>
+  
+          <div class={comboboxClasses}
+            aria-expanded={showListbox}
+            aria-haspopup="listbox"
+            role="combobox">
+  
+            <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left-right"
+              role="none">
+              <span if:true={record}
+                class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left">
+                <lightning-icon
+                  size="x-small"
+                  icon-name={iconName}></lightning-icon>
+              </span>
+              <span if:false={record}
+                class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left">
+                <lightning-icon
+                  size="x-small"
+                  icon-name="utility:search"></lightning-icon>
+              </span>
+              <input type="search"
+                id="searchInput"
+                class={inputClasses}
+                value={inputValue}
+                onkeyup={onKeyup}
+                onfocus={setFocus}
+                onblur={setFocus}
+                minlength="3"
+                pattern="[a-zA-Z]*"
+                autocomplete="off"
+                aria-autocomplete="list"
+                aria-controls="searchInput"
+                role="textbox"
+                readonly={isReadOnly}
+                required={required}
+                placeholder="Search...">
+  
+              <button if:true={showClear}
+                onclick={clearSelection}
+                class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"
+                title="Remove selected option">
+                <lightning-icon
+                  size="x-small"
+                  icon-name="utility:close"></lightning-icon>
+                <span class="slds-assistive-text">Remove selected option</span>
+              </button>
+            </div>
+  
+            <div if:true={hasError} class="slds-form-element__help">
+              {error.message}
+            </div>
+  
+            <div if:true={showListbox} class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid"
+              role="listbox">
+              <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                <template for:each={records} for:item="record">
+                    <li key={record.Id} class="slds-listbox__item" role="presentation">
+                        <div onmousedown={clickRecord}
+                            class={itemClasses}
+                            role="option"
+                            data-record-id={record.Id}  
+                            data-record-name={record.Name}>
+            
+                            <span class="slds-media__figure slds-listbox__option-icon">
+                                <lightning-icon icon-name={iconName}></lightning-icon>
+                            </span>
+            
+                            <span class="slds-media__body">
+                                <span class="slds-listbox__option-text slds-listbox__option-text_entity">
+                                    {record.Name}
+                                </span>
+                                <span class="slds-listbox__option-meta slds-listbox__option-meta_entity slds-truncate">
+                                    {record.Id}
+                                </span>
+                            </span>
+                        </div>
+                    </li>
+                </template>
+            </ul>
+            
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
