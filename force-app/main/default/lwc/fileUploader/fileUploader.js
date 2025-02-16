@@ -11,20 +11,28 @@ export default class FileUploader extends LightningElement {
 
 
 
-    handleUpload(event) { 
+    handleUpload(event) {
         const file = event.target.files[0];
-        let fileContents;
-        let fileReader = new FileReader();
-        let self = this;
-        fileReader.onload = function () {
-            fileContents = fileReader.result;
+        if (!file) {
+            console.error("No file selected.");
+            return;
+        }
+    
+        const fileReader = new FileReader();
+    
+        fileReader.onload = () => {
             const base64Mark = 'base64,';
-            const dataStart = fileContents.indexOf(base64Mark) + base64Mark.length;
-            fileContents = fileContents.substring(dataStart);
-            self.uploadFile(file.name, fileContents );
-            };
-        fileReader.readAsDataURL(file);
+            const fileContents = btoa(fileReader.result); // Convert binary to base64
+            this.uploadFile(file.name, fileContents);
+        };
+    
+        fileReader.onerror = (error) => {
+            console.error("Error reading file:", error);
+        };
+    
+        fileReader.readAsBinaryString(file); // Reads the file as a binary string
     }
+    
 
     uploadFile(file, fileContents) {   
         uploadDocument({ files: file, versionData: fileContents ,parent_id: this.recordId})
